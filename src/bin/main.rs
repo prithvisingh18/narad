@@ -1,13 +1,9 @@
-mod reader;
-
-use reader::handle_client_stream;
+use narad::logger::log;
+use narad::reader::handle_client_stream;
 use std::net::TcpListener;
 
-pub fn log(log: String) {
-    println!("{}", log);
-}
-
 fn main() -> std::io::Result<()> {
+    log("Starting TCP server.".to_owned());
     let listener = match TcpListener::bind("127.0.0.1:1080") {
         Ok(listener) => listener,
         Err(error) => {
@@ -15,7 +11,8 @@ fn main() -> std::io::Result<()> {
             panic!("Exiting, could not create server.");
         }
     };
-
+    
+    log("Waiting to accept connections.".to_owned());
     // accept connections and process them serially
     for stream in listener.incoming() {
         let client_stream = match stream {

@@ -1,10 +1,10 @@
-use super::log;
+use super::logger::log;
 
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
 pub fn handle_client_stream(mut client_stream: TcpStream) {
-    let mut buffer = [0; 1024];
+    let mut buffer = [0; 4096];
     let mut message_count = 0;
     loop {
         // Read data from the stream

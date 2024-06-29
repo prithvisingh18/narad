@@ -4,16 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "main"
-path = "src/bin/main.rs"
-
-[[bin]]
-name = "tcp_client"
-path = "src/bin/tcp_client.rs"
-
-[[bin]]
-name = "http_client"
-path = "src/bin/http_client.rs"
+name = "socks_server"
+path = "src/bin/socks_server.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]

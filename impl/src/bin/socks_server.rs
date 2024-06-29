@@ -1,5 +1,5 @@
 use narad::logger::log;
-use narad::reader::handle_client_stream;
+use narad::socks_handler::handle_client_stream;
 use std::net::TcpListener;
 
 fn main() -> std::io::Result<()> {

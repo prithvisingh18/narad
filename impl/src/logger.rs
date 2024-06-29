@@ -1,3 +1,5 @@
+use chrono::offset::Utc;
+
 pub fn log(log: String) {
-    println!("{}", log);
+    println!("[{}] <=::=> {}", Utc::now(),log);
 }

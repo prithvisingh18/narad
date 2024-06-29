@@ -9,6 +9,8 @@ path = "src/bin/socks_server.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
+chrono = "0.4.38"
+dns-lookup = "2.0.4"
 reqwest = { version = "0.12.3", default-features = false, features = [
     "blocking",
     "rustls-tls",

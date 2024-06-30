@@ -7,6 +7,14 @@ edition = "2021"
 name = "socks_server"
 path = "src/bin/socks_server.rs"
 
+[[bin]]
+name = "controller"
+path = "src/bin/controller.rs"
+
+[[bin]]
+name = "node"
+path = "src/bin/node.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 chrono = "0.4.38"

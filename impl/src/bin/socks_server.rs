@@ -6,7 +6,7 @@ use narad::socks_handler::handle_client_stream;
 
 fn main() -> std::io::Result<()> {
     log("Starting socks server.".to_owned());
-    let listener = match TcpListener::bind("127.0.0.1:9999") {
+    let listener = match TcpListener::bind("0.0.0.0:9999") {
         Ok(listener) => listener,
         Err(error) => {
             log(format!("Got error creating listener: {}", error));

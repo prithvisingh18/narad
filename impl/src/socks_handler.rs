@@ -2,10 +2,15 @@ use super::logger::log;
 use super::relay::relay_data;
 
 use std::io::{Read, Write};
-use std::net::{IpAddr, Ipv4Addr, Shutdown, TcpStream};
-use std::thread;
+use std::net::{IpAddr, Ipv4Addr, TcpStream};
+use std::sync::Arc;
 
-pub fn handle_client_stream(mut client_stream: TcpStream) {
+pub fn handle_client_stream(
+    mut client_stream: TcpStream,
+    auth_required: Arc<bool>,
+    username: Arc<String>,
+    password: Arc<String>,
+) {
     // Accept greeting
     let mut greeting = [0; 256];
     match client_stream.read(&mut greeting) {
@@ -18,15 +23,68 @@ pub fn handle_client_stream(mut client_stream: TcpStream) {
         }
     };
 
-    // Send no authentication response
-    let response = "\x05\x00";
-    match client_stream.write(response.as_bytes()) {
-        Ok(_) => {}
-        Err(error) => {
-            log(format!("Got error while responding: {}", error));
-            return;
+    if *auth_required {
+        let response = "\x05\x02"; // \x02 indicates username/password authentication
+        match client_stream.write(response.as_bytes()) {
+            Ok(_) => {}
+            Err(error) => {
+                log(format!("Got error while responding: {}", error));
+                return;
+            }
+        };
+        let auth_creds = String::from(format!("{}{}", *username, *password));
+        println!("{}", auth_creds.as_bytes().len());
+        // Read username and password authentication message
+        let mut auth_data = vec![0; 512]; // Buffer for authentication data
+        match client_stream.read(&mut auth_data) {
+            Ok(size) => {
+                log(format!("Received {} bytes for authentication data", size));
+            }
+            Err(error) => {
+                log(format!("Error reading authentication data: {}", error));
+                return;
+            }
+        };
+        let req_auth_data: String = String::from_utf8_lossy(&auth_data)
+            .to_string()
+            .chars()
+            .filter(|c| c.is_alphabetic())
+            .collect();
+        println!("{} {}", auth_creds, req_auth_data);
+        if req_auth_data == auth_creds {
+            log("Auth successfull, proceeding further.".to_owned());
+            let auth_success_response = "\x01\x00"; // \x00 indicates general success
+            match client_stream.write(auth_success_response.as_bytes()) {
+                Ok(_) => {}
+                Err(error) => {
+                    log(format!("Got error while responding: {}", error));
+                    return;
+                }
+            };
+        } else {
+            log("Auth failed.".to_owned());
+            let auth_fail_response = "\x01\x01"; // \x01 indicates general failure
+            match client_stream.write(auth_fail_response.as_bytes()) {
+                Ok(_) => {
+                    return;
+                }
+                Err(error) => {
+                    log(format!("Got error while responding: {}", error));
+                    return;
+                }
+            };
         }
-    };
+    } else {
+        // Send no authentication response
+        let response = "\x05\x00";
+        match client_stream.write(response.as_bytes()) {
+            Ok(_) => {}
+            Err(error) => {
+                log(format!("Got error while responding: {}", error));
+                return;
+            }
+        };
+    }
 
     let mut connection_request = [0; 256];
     match client_stream.read(&mut connection_request) {

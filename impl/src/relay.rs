@@ -1,7 +1,7 @@
 use super::logger::log;
 
 use std::io::{Read, Write};
-use std::net::{IpAddr, Ipv4Addr, Shutdown, TcpStream};
+use std::net::{Shutdown, TcpStream};
 use std::thread;
 
 // Function to forward data from source to destination

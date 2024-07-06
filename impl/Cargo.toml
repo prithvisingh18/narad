@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
+name = "node_ui"
+path = "src/bin/node_ui.rs"
+
+[[bin]]
 name = "socks_server"
 path = "src/bin/socks_server.rs"
 
@@ -19,6 +23,7 @@ path = "src/bin/node.rs"
 [dependencies]
 chrono = "0.4.38"
 dns-lookup = "2.0.4"
+gtk4 = "0.8.2"
 reqwest = { version = "0.12.3", default-features = false, features = [
     "blocking",
     "rustls-tls",

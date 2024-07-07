@@ -4,10 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "node_ui"
-path = "src/bin/node_ui.rs"
-
-[[bin]]
 name = "socks_server"
 path = "src/bin/socks_server.rs"
 

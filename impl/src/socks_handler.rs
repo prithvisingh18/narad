@@ -22,7 +22,11 @@ pub fn handle_client_stream(
             return;
         }
     };
-
+    println!(
+        "got this greeting -> {}",
+        String::from_utf8_lossy(&greeting)
+    );
+    println!("{} {} {}", greeting[0], greeting[1], greeting[2]);
     if *auth_required {
         let response = "\x05\x02"; // \x02 indicates username/password authentication
         match client_stream.write(response.as_bytes()) {

@@ -19,8 +19,3 @@ path = "src/bin/node.rs"
 [dependencies]
 chrono = "0.4.38"
 dns-lookup = "2.0.4"
-reqwest = { version = "0.12.3", default-features = false, features = [
-    "blocking",
-    "rustls-tls",
-    "json",
-] }

@@ -3,6 +3,11 @@ name = "narad"
 version = "0.1.0"
 edition = "2021"
 
+
+[[bin]]
+name = "async_socks_server"
+path = "src/bin_async/socks_server.rs"
+
 [[bin]]
 name = "socks_server"
 path = "src/bin/socks_server.rs"
@@ -19,3 +24,5 @@ path = "src/bin/node.rs"
 [dependencies]
 chrono = "0.4.38"
 dns-lookup = "2.0.4"
+tokio = { version = "1.41.1", features = ["full"] }
+

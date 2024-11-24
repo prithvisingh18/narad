@@ -61,8 +61,6 @@ fn main() -> Result<()> {
 
     // Create the main connection to the controller
     let mut main_connection = TcpStream::connect(controller_ip)?;
-    main_connection.write_all(b"node_greeting")?;
-    println!("Sent 'node_greeting' to controller");
     // Send `node_greeting` to controller through the main connection
     log("Sending node_greeting to controller".to_owned());
     main_connection.write_all(b"node_greeting")?;

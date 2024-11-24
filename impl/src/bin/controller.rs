@@ -205,109 +205,6 @@ fn main() -> Result<()> {
     let node_listener = TcpListener::bind("0.0.0.0:1111")?;
     println!("Controller listening for nodes on port 1111");
 
-    /*
-    let thread_1_listener = listener.try_clone()?;
-    let h1 = thread::spawn(move || {
-        for stream in thread_1_listener.incoming() {
-            let mut stream = stream.unwrap();
-            thread::spawn(move || {
-                println!("Accepted connection from thread 1");
-                loop {
-                    let mut msg = [0; 256];
-                    let bytes_read = match stream.read(&mut msg) {
-                        Ok(bytes_read) => {
-                            if bytes_read == 0 {
-                                continue;
-                            }
-                            bytes_read
-                        }
-                        Err(e) => {
-                            println!("Got error -> {}", e);
-                            continue;
-                        }
-                    };
-                    println!("Received msg from client:");
-                    let msg = String::from_utf8_lossy(&msg[..bytes_read]);
-                    println!("thread 1 -> {}", msg);
-                }
-            });
-            // thread::sleep(Duration::from_secs(2));
-        }
-    });
-
-    let thread_2_listener = listener.try_clone()?;
-    let h2 = thread::spawn(move || {
-        for stream in thread_2_listener.incoming() {
-            let mut stream = stream.unwrap();
-            thread::spawn(move || {
-                println!("Accepted connection from thread 2");
-                loop {
-                    let mut msg = [0; 256];
-                    let bytes_read = match stream.read(&mut msg) {
-                        Ok(bytes_read) => {
-                            if bytes_read == 0 {
-                                continue;
-                            }
-                            bytes_read
-                        }
-                        Err(e) => {
-                            println!("Got error -> {}", e);
-                            continue;
-                        }
-                    };
-                    println!("Received msg from client:");
-                    let msg = String::from_utf8_lossy(&msg[..bytes_read]);
-                    println!("thread 2 -> {}", msg);
-                }
-            });
-        }
-    });
-    h2.join().unwrap();
-    h1.join().unwrap();
-
-    // let mut thread_1_socket = client_socket.try_clone()?;
-        // thread::spawn(move || loop {
-        //     let mut msg = [0; 256];
-        //     let bytes_read = match thread_1_socket.read(&mut msg) {
-        //         Ok(bytes_read) => {
-        //             if bytes_read == 0 {
-        //                 continue;
-        //             }
-        //             bytes_read
-        //         }
-        //         Err(e) => {
-        //             println!("Got error -> {}", e);
-        //             continue;
-        //         }
-        //     };
-        //     println!("Received msg from client:");
-        //     let msg = String::from_utf8_lossy(&msg[..bytes_read]);
-        //     println!("thread 1 -> {}", msg);
-        // });
-
-        // let mut thread_2_socket = client_socket.try_clone()?;
-        // thread::spawn(move || loop {
-        //     let mut msg = [0; 256];
-        //     let bytes_read = match thread_2_socket.read(&mut msg) {
-        //         Ok(bytes_read) => {
-        //             if bytes_read == 0 {
-        //                 println!("Received no msg from client");
-        //                 continue;
-        //             }
-        //             bytes_read
-        //         }
-        //         Err(e) => {
-        //             println!("Got error -> {}", e);
-        //             continue;
-        //         }
-        //     };
-        //     println!("Received msg from client:");
-        //     let msg = String::from_utf8_lossy(&msg[..bytes_read]);
-        //     println!("thread 2 -> {}", msg);
-        // });
-
-    */
-
     let mut nodes: Vec<TcpStream> = Vec::new();
     log("Waiting for node to connect.".to_owned());
     for stream in node_listener.incoming() {
@@ -317,7 +214,7 @@ fn main() -> Result<()> {
             "Client connected from {}, verifying if it is a node",
             client_addr
         ));
-        // Verfy it as a node or client
+        // Verify it as a node or client
         match node_greetings_handler(client_socket) {
             Some((client_socket, is_node)) => {
                 if is_node == true {

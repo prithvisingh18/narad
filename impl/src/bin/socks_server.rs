@@ -1,11 +1,12 @@
-use std::net::TcpListener;
+use std::env;
 use std::sync::Arc;
-use std::{env, thread};
+use tokio::net::TcpListener;
 
 use narad::logger::log;
 use narad::socks_handler::handle_client_stream;
 
-fn main() -> std::io::Result<()> {
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
     log("Starting socks server.".to_owned());
     let args: Vec<String> = env::args().collect();
 
@@ -23,7 +24,7 @@ fn main() -> std::io::Result<()> {
         log("No creds given, no auth will not be required.".to_owned());
     }
 
-    let listener = match TcpListener::bind("0.0.0.0:9000") {
+    let listener = match TcpListener::bind("0.0.0.0:9999").await {
         Ok(listener) => listener,
         Err(error) => {
             log(format!("Got error creating listener: {}", error));
@@ -36,25 +37,22 @@ fn main() -> std::io::Result<()> {
     let username = Arc::new(username);
     let password = Arc::new(password);
 
-    for stream in listener.incoming() {
-        let client_stream = match stream {
-            Ok(connection) => connection,
+    loop {
+        let (client_stream, addr) = match listener.accept().await {
+            Ok((stream, addr)) => (stream, addr),
             Err(error) => {
                 log(format!("Got error while creating connection: {}", error));
                 continue;
             }
         };
-        log(format!(
-            "New connection: {}",
-            client_stream.peer_addr().unwrap()
-        ));
+        log(format!("New connection: {}", addr));
+
         let thread_auth_reqired = Arc::clone(&auth_reqired);
         let thread_username = Arc::clone(&username);
         let thread_password = Arc::clone(&password);
-        // Single threaded
-        thread::spawn(move || {
-            handle_client_stream(client_stream, thread_auth_reqired, thread_username, thread_password);
+
+        tokio::spawn(async move {
+            handle_client_stream(client_stream, thread_auth_reqired, thread_username, thread_password).await;
         });
     }
-    Ok(())
 }

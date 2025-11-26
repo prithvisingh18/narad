@@ -229,8 +229,8 @@ async fn node_greetings_handler(mut client_stream: TcpStream) -> Option<(TcpStre
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    let binding_ip = "127.0.0.1";
-    // let binding_ip = "0.0.0.0";
+    // let binding_ip = "127.0.0.1";
+    let binding_ip = "0.0.0.0";
     let listener = TcpListener::bind(format!("{}:{}", binding_ip, "9000")).await?;
     println!("Controller listening for clients on port 9000");
     let node_listener = TcpListener::bind(format!("{}:{}", binding_ip, "1111")).await?;
